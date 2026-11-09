@@ -9,7 +9,7 @@ export type TokenKind = 'keyword' | 'name' | 'key' | 'string' | 'punct' | 'space
 type Line = [TokenKind, string][];
 
 export const heroCode: Line[] = [
-  [['keyword', 'function'], ['space', ' '], ['name', 'viktoriiaSheveria'], ['punct', '() {']],
+  [['keyword', 'function'], ['space', ' '], ['name', 'victoriaSheveria'], ['punct', '() {']],
   [['space', '  '], ['keyword', 'return'], ['space', ' '], ['punct', '{']],
   [['space', '    '], ['key', 'role'], ['punct', ': '], ['string', "'Front-end & WordPress developer'"], ['punct', ',']],
   [['space', '    '], ['key', 'based'], ['punct', ': '], ['string', "'London'"], ['punct', ',']],

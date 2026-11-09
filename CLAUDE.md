@@ -1,6 +1,6 @@
 # Vanadium — project notes for Claude
 
-Portfolio of Victoriia Sheveria (Front-End & WordPress Developer, London).
+Portfolio of Victoria Sheveria (Front-End & WordPress Developer, London).
 It is used to apply for jobs, so the code itself is part of the portfolio: keep it short, clean and explainable.
 The owner writes in Ukrainian — answer in Ukrainian, keep code and commit messages in English.
 
@@ -32,6 +32,8 @@ shorthand: the CSS minifier folds the timeline into the shorthand and browsers d
 GLSL `smoothstep(a, b, x)` is undefined when a >= b (holes on some GPUs): invert with `1.0 - smoothstep(lo, hi, x)`.
 
 ## Copy style
+The owner's name is spelled **Victoria Sheveria** everywhere on the site. Do NOT change the email
+(viktoriia.ianuta@…) or the LinkedIn URL (…/viktoriia-sheveria-…): those are real addresses.
 No em dashes (—) anywhere in visible copy: the owner asked to remove them. Use commas, colons or full stops.
 
 ## Honesty
