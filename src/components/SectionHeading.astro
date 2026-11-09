@@ -1,0 +1,35 @@
+---
+/** Numbered section heading, e.g. "01 — Selected work". Keeps every section consistent. */
+interface Props {
+  id: string;
+  index: string;
+  title: string;
+}
+
+const { id, index, title } = Astro.props;
+---
+
+<header class="section-heading">
+  <span class="section-heading__index" aria-hidden="true">{index}</span>
+  <h2 class="section-heading__title" id={id}>{title}</h2>
+</header>
+
+<style>
+  .section-heading {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-m);
+    padding-block-end: var(--space-m);
+    margin-block-end: var(--space-xl);
+    box-shadow: var(--engrave-bottom);
+  }
+
+  .section-heading__index {
+    font-size: var(--label);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .section-heading__title {
+    font-size: var(--step-3);
+  }
+</style>

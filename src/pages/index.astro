@@ -1,0 +1,483 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ElementTile from '@/components/ElementTile.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import { about, element, site, socials } from '@/data/site';
+import { gallery, MIN_GALLERY } from '@/data/gallery';
+
+// Homepage shows real work only; training projects live in the Lab
+const projects = (
+  await getCollection('projects', ({ data }) => !data.draft && data.type !== 'training')
+).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<BaseLayout>
+  <!-- ───────────── Hero ───────────── -->
+  <section class="hero" aria-labelledby="hero-title">
+    <canvas class="veil" aria-hidden="true"></canvas>
+    <h1 class="hero__title" id="hero-title">
+      <strong>Viktoriia</strong> Sheveria
+    </h1>
+    <p class="hero__lead label">
+      <strong>{site.role}</strong> — {site.intro}
+    </p>
+
+    <a class="hero__scroll label" href={gallery.length >= MIN_GALLERY ? '#gallery' : '#about'}>
+      <svg class="hero__arrow" viewBox="0 0 12 40" aria-hidden="true" focusable="false">
+        <path d="M6 0 V38 M1 33 L6 38 L11 33" />
+      </svg>
+      <span class="link-line">Scroll down</span>
+    </a>
+  </section>
+
+  <!-- ───────────── Gallery: endless strip of project screenshots (drag, swipe or arrow keys) ───────────── -->
+  {
+    gallery.length >= MIN_GALLERY && (
+    <section class="gallery" id="gallery" aria-label="Project screenshots — drag or use the arrow keys" tabindex="0">
+      <div class="gallery__track">
+        {
+          [false, true].map((isCopy) => (
+            <ul class="gallery__list" role="list" aria-hidden={isCopy ? 'true' : undefined} inert={isCopy}>
+              {gallery.map(({ image, alt, href, external }) => (
+                <li class="gallery__item">
+                  <a href={href} draggable="false" {...(external && { target: '_blank', rel: 'noopener' })}>
+                    <Image
+                      src={image}
+                      alt={isCopy ? '' : alt}
+                      widths={[640, 1000, 1400, 1900]}
+                      sizes="(min-width: 64rem) 50vw, 90vw"
+                      draggable="false"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ))
+        }
+      </div>
+    </section>
+    )
+  }
+
+  <!-- ───────────── Intro: sticky visual + numbered story ───────────── -->
+  <section class="intro" aria-labelledby="about">
+    <div class="intro__media" aria-hidden="true">
+      <!-- TODO: portrait or studio photo goes here later -->
+      <ElementTile number={element.number} symbol={element.symbol} name={element.name} caption={element.mass} size="lg" />
+    </div>
+
+    <div class="intro__content">
+      <h2 class="intro__label label" id="about">About</h2>
+      <ol class="numbered" role="list">
+        {
+          about.story.map((paragraph, i) => (
+            <li class="numbered__item reveal" id={i === 0 ? 'story' : undefined}>
+              <span class="numbered__index label">0{i + 1}</span>
+              <p class="numbered__text">{paragraph}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- ───────────── Work ───────────── -->
+  <section class="section" aria-labelledby="work">
+    <SectionHeading id="work" index="01" title="Selected work" />
+    <ol class="project-list" role="list">
+      {
+        projects.map((project) => (
+          <li class="reveal">
+            <ProjectCard project={project} />
+          </li>
+        ))
+      }
+    </ol>
+    <p class="section__note label">
+      Some client work is under NDA and is described without names.
+      More experiments live in the <a class="link-line" href="/lab">Lab</a>, and my first portfolio is still
+      online: <a class="link-line" href={site.oldPortfolio} target="_blank" rel="noopener">2024 portfolio</a>.
+    </p>
+  </section>
+
+  <!-- ───────────── How I work + toolkit ───────────── -->
+  <section class="section" aria-labelledby="approach">
+    <SectionHeading id="approach" index="02" title="How I work" />
+    <div class="method">
+      <ol class="numbered" role="list">
+        {
+          about.approach.map(({ step, text }, i) => (
+            <li class="numbered__item reveal">
+              <span class="numbered__index label">0{i + 1}</span>
+              <p class="numbered__text"><strong>{step}.</strong> {text}</p>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="toolkit reveal" id="toolkit">
+        <h3 class="label">Toolkit</h3>
+        <dl class="skills">
+          {
+            about.skills.map(({ group, items }) => (
+              <div class="skills__group">
+                <dt class="label">{group}</dt>
+                <dd>{items.join(' · ')}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────── Contact ───────────── -->
+  <section class="section contact" aria-labelledby="contact">
+    <SectionHeading id="contact" index="03" title="Contact" />
+    <p class="contact__lead label">Open to front-end and WordPress roles in London or remote.</p>
+    <a class="contact__email link-line" href={`mailto:${site.email}`}>{site.email}</a>
+    <ul class="contact__links label" role="list">
+      {
+        socials.map(({ label, href }) => (
+          <li>
+            <a class="link-line" href={href} rel="me noopener" target="_blank">
+              {label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <a class="to-top" href="#main" aria-label="Back to top">
+    <svg viewBox="0 0 16 24" aria-hidden="true" focusable="false">
+      <path d="M8 24 V1 M1 8 L8 1 L15 8" />
+    </svg>
+  </a>
+</BaseLayout>
+
+<script>
+  import { dissolveVeil } from '@/scripts/veil';
+  import { initGallery } from '@/scripts/gallery';
+
+  const canvas = document.querySelector<HTMLCanvasElement>('.veil');
+  const gallery = document.querySelector<HTMLElement>('.gallery');
+  canvas && dissolveVeil(canvas);
+  gallery && initGallery(gallery);
+</script>
+
+<style>
+  /* ── Hero: centred title, bold + light in one family ── */
+  .hero {
+    position: relative;
+    background: #151413; /* revealed when the paper veil dissolves */
+    display: grid;
+    grid-template-rows: 1fr auto auto 1fr;
+    justify-items: center;
+    gap: var(--space-m);
+    min-block-size: 100svh;
+    padding: var(--space-2xl) var(--gutter) var(--space-l);
+    text-align: center;
+  }
+
+  /* White + difference: dark while the paper is on top, white on the dark hero —
+     even mid-letter while a blot passes through. No isolation on .hero, or the blend breaks. */
+  .hero__title,
+  .hero__lead,
+  .hero__scroll {
+    position: relative; /* paint above the absolutely positioned veil */
+    color: #fff;
+    mix-blend-mode: difference;
+  }
+
+  /* Paper veil: CSS paper until the shader takes over, then removed by veil.ts */
+  .veil {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    background: var(--paper);
+    pointer-events: none;
+  }
+
+  .veil:global(.is-live) {
+    background: none;
+  }
+
+  .hero__title {
+    grid-row: 2;
+    font-size: var(--step-hero);
+    line-height: 1.05;
+  }
+
+  .hero__title strong {
+    font-weight: 600;
+  }
+
+  .hero__lead {
+    grid-row: 3;
+    max-inline-size: 36rem;
+  }
+
+  .hero__lead strong {
+    font-weight: 600;
+  }
+
+  .hero__scroll {
+    grid-row: 4;
+    align-self: end;
+    display: grid;
+    justify-items: center;
+    gap: var(--space-m);
+    text-decoration: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__scroll {
+      animation: fade-in 1s var(--ease-out) 2.4s both;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      translate: 0 1rem;
+    }
+  }
+
+  .hero__arrow,
+  .to-top svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .hero__arrow {
+    inline-size: 0.75rem;
+    block-size: 2.5rem;
+    transition: translate var(--duration) var(--ease-out);
+  }
+
+  .hero__scroll:hover .hero__arrow {
+    translate: 0 0.4rem;
+  }
+
+  /* ── Gallery: moved by gallery.ts with a transform ── */
+  .gallery {
+    overflow: hidden;
+    padding-block: var(--space-l) var(--space-2xl);
+    cursor: grab;
+    touch-action: pan-y; /* vertical swipes still scroll the page */
+    user-select: none;
+  }
+
+  .gallery:global(.is-dragging) {
+    cursor: grabbing;
+  }
+
+  .gallery:focus-visible {
+    outline-offset: -4px;
+  }
+
+  .gallery__track {
+    display: flex;
+    inline-size: max-content;
+    will-change: transform;
+  }
+
+  .gallery__list {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 3rem);
+    padding-inline-end: clamp(1rem, 3vw, 3rem);
+  }
+
+  .gallery__item a {
+    display: block;
+    overflow: hidden;
+  }
+
+  /* Screenshots keep their own proportions — nothing is cropped or stretched */
+  .gallery__item :global(img) {
+    block-size: clamp(13rem, 24vw, 26rem);
+    inline-size: auto;
+    max-inline-size: none;
+    transition: scale 1s var(--ease-out);
+    -webkit-user-drag: none;
+  }
+
+  /* Every third one is taller, so the strip has rhythm */
+  .gallery__item:nth-child(3n + 2) :global(img) {
+    block-size: clamp(15rem, 29vw, 31rem);
+  }
+
+  .gallery__item a:hover :global(img) {
+    scale: 1.03;
+  }
+
+  /* ── Intro: sticky visual on the left, numbered story on the right ── */
+  .intro {
+    display: grid;
+    gap: var(--space-xl);
+    padding: var(--space-xl) var(--gutter) 0;
+  }
+
+  .intro__media {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 5;
+    background: var(--paper-raised);
+    box-shadow: var(--engrave-top), var(--engrave-bottom);
+  }
+
+  .intro__label {
+    padding-block-end: var(--space-m);
+  }
+
+  @media (width >= 64rem) {
+    .intro {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+
+    .intro__media {
+      position: sticky;
+      inset-block-start: 5rem;
+      block-size: calc(100svh - 7rem);
+      aspect-ratio: auto;
+    }
+  }
+
+  /* ── Numbered rows (01, 02, 03) with engraved dividers ── */
+  .numbered__item {
+    display: grid;
+    gap: var(--space-s);
+    padding-block: var(--space-l);
+    box-shadow: var(--engrave-top);
+  }
+
+  .numbered__item:last-child {
+    box-shadow: var(--engrave-top), var(--engrave-bottom);
+  }
+
+  .numbered__text {
+    max-inline-size: 26rem;
+    font-size: var(--step-0);
+    line-height: 1.65;
+    letter-spacing: -0.01em;
+  }
+
+  @media (width >= 48rem) {
+    .numbered__item {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* ── Work ── */
+  .project-list {
+    box-shadow: var(--engrave-top);
+  }
+
+  /* ── Method + toolkit ── */
+  .method {
+    display: grid;
+    gap: var(--space-xl) var(--space-l);
+  }
+
+  @media (width >= 64rem) {
+    .method {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+  }
+
+  .toolkit h3 {
+    padding-block-end: var(--space-m);
+  }
+
+  .skills__group {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: var(--space-s);
+    padding-block: var(--space-m);
+    box-shadow: var(--engrave-top);
+  }
+
+  .skills__group:last-child {
+    box-shadow: var(--engrave-top), var(--engrave-bottom);
+  }
+
+  .skills dt {
+    color: var(--ink-muted);
+  }
+
+  /* ── Contact ── */
+  .contact__lead {
+    color: var(--ink-muted);
+  }
+
+  .contact__email {
+    margin-block: var(--space-m);
+    font-size: min(var(--step-3), 7vw);
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    overflow-wrap: anywhere;
+  }
+
+  .contact__links {
+    display: flex;
+    gap: var(--space-m);
+  }
+
+  /* ── Back to top ── */
+  .to-top {
+    position: fixed;
+    inset-block-end: var(--space-m);
+    inset-inline-end: var(--gutter);
+    z-index: 40;
+    display: grid;
+    place-items: center;
+    inline-size: 3.5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--paper-raised);
+    box-shadow: 0 0.25rem 1.5rem rgb(53 53 53 / 0.08);
+    color: var(--ink);
+  }
+
+  .to-top svg {
+    inline-size: 0.8rem;
+    transition: translate var(--duration) var(--ease-out);
+  }
+
+  .to-top:hover svg {
+    translate: 0 -0.25rem;
+  }
+
+  /* Appears only after the first screen — driven by scroll position, no JS */
+  @supports (animation-timeline: scroll()) {
+    /* Longhands on purpose — see .reveal in global.css */
+    .to-top {
+      animation-name: to-top-in;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll();
+      animation-range: 0 60vh;
+    }
+  }
+
+  @keyframes to-top-in {
+    0%,
+    80% {
+      opacity: 0;
+      visibility: hidden;
+      scale: 0.8;
+    }
+  }
+</style>

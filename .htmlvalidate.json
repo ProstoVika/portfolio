@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "html-validate:recommended"
+  ],
+  "rules": {
+    "no-redundant-role": "off"
+  },
+  "elements": [
+    "html5",
+    {
+      "style": {
+        "flow": true
+      }
+    }
+  ]
+}

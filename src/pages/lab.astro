@@ -1,0 +1,116 @@
+---
+/** The Lab: training projects from Foxminded, plus a link to the old portfolio. */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import { Image } from 'astro:assets';
+import { labItems } from '@/data/lab';
+import { site } from '@/data/site';
+import oldPortfolio from '@/assets/lab/portfolio-2024.png';
+---
+
+<BaseLayout
+  title="Lab"
+  description="Training projects from my front-end course at Foxminded: TypeScript, SCSS, Angular, REST APIs."
+>
+  <section class="section" aria-labelledby="lab">
+    <SectionHeading id="lab" index="—" title="Lab" />
+    <p class="section__lead">
+      Where I learned the fundamentals: training projects from Foxminded, reviewed by a mentor.
+      Kept here as an honest record of where I started.
+    </p>
+
+    <ul class="lab-list" role="list">
+      {
+        labItems.map(({ title, note, stack, image, live, code }) => (
+          <li class="lab-item reveal">
+            {image && (
+              <a class="lab-item__media" href={live} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+                <Image src={image} alt="" widths={[480, 800, 1200]} sizes="(min-width: 64rem) 30vw, 90vw" />
+              </a>
+            )}
+            <h3 class="lab-item__title">{title}</h3>
+            <p class="lab-item__note">{note}</p>
+            <p class="lab-item__stack label">{stack.join(' · ')}</p>
+            <p class="lab-item__links label">
+              <a class="link-line" href={live} target="_blank" rel="noopener">
+                Demo<span class="visually-hidden">: {title}</span>
+              </a>
+              <a class="link-line" href={code} target="_blank" rel="noopener">
+                Code<span class="visually-hidden">: {title}</span>
+              </a>
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <figure class="previous">
+      <a class="lab-item__media" href={site.oldPortfolio} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+        <Image src={oldPortfolio} alt="" widths={[640, 1000, 1400]} sizes="(min-width: 64rem) 50vw, 90vw" />
+      </a>
+      <figcaption class="label">
+        My first portfolio (2024), where I practised layout, OOP and Webpack —
+        <a class="link-line" href={site.oldPortfolio} target="_blank" rel="noopener">open it</a>.
+      </figcaption>
+    </figure>
+  </section>
+</BaseLayout>
+
+<style>
+  .lab-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+    gap: var(--space-xl) var(--space-l);
+  }
+
+  .lab-item {
+    display: grid;
+    gap: var(--space-2xs);
+    align-content: start;
+  }
+
+  /* Screenshot: fixed frame, shows the top of the page, zooms a little on hover */
+  .lab-item__media {
+    display: block;
+    overflow: hidden;
+    margin-block-end: var(--space-xs);
+    aspect-ratio: 16 / 9;
+    box-shadow: var(--engrave-top), var(--engrave-bottom);
+  }
+
+  .lab-item__media :global(img) {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: top;
+    transition: scale 1s var(--ease-out);
+  }
+
+  .lab-item:hover .lab-item__media :global(img) {
+    scale: 1.04;
+  }
+
+  .lab-item__title {
+    font-size: var(--step-1);
+  }
+
+  .lab-item__note {
+    color: var(--ink-muted);
+  }
+
+  .lab-item__stack {
+    color: var(--ink-muted);
+  }
+
+  .previous {
+    display: grid;
+    gap: var(--space-xs);
+    max-inline-size: 48rem;
+    margin-block-start: var(--space-2xl);
+  }
+
+  .lab-item__links {
+    display: flex;
+    gap: var(--space-m);
+  }
+</style>

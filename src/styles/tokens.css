@@ -1,0 +1,97 @@
+/*
+ * Design tokens. Every colour, size and duration on the site comes from here.
+ * light-dark() picks the value for the user's colour scheme — no duplicate dark theme block.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* ── Neutrals: warm rosy paper and graphite ink ── */
+  --paper: light-dark(#ece4e1, #1c1a19);
+  --paper-raised: light-dark(#f3edea, #252220);
+  --ink: light-dark(#353535, #ece4e1);
+  --ink-muted: light-dark(rgb(53 53 53 / 0.65), rgb(236 228 225 / 0.65));
+  --line: light-dark(#353535, #ece4e1);
+  --line-soft: light-dark(rgb(53 53 53 / 0.2), rgb(236 228 225 / 0.15));
+
+  /* "Engraved" divider: a dark line with a light line right under it,
+     so the rule looks pressed into the surface. Use as box-shadow. */
+  --engrave-dark: light-dark(rgb(53 53 53 / 0.2), rgb(0 0 0 / 0.6));
+  --engrave-light: light-dark(rgb(255 255 255 / 0.7), rgb(255 255 255 / 0.06));
+  --engrave-bottom: inset 0 -1px 0 var(--engrave-light), inset 0 -2px 0 var(--engrave-dark);
+  --engrave-top: inset 0 1px 0 var(--engrave-dark), inset 0 2px 0 var(--engrave-light);
+
+  /* Menu over the blurred page */
+  --menu-ink: #ece4e1;
+  --menu-veil: rgb(28 26 24 / 0.68);
+  --menu-engrave: inset 0 -1px 0 rgb(255 255 255 / 0.18), inset 0 -2px 0 rgb(0 0 0 / 0.35);
+
+  /* ── Accent: vanadium oxidation states (set by data-oxidation on <html>) ──
+     --accent is decorative (veil, tile, hover fills);
+     --accent-ink is the readable version for text on paper. */
+  --accent: var(--v4);
+  --accent-ink: var(--v4-ink);
+
+  --v2: #8e6fd8; /* V²⁺ violet */
+  --v2-ink: light-dark(#5b3fa8, #b9a3f0);
+  --v3: #3f9a6b; /* V³⁺ green  */
+  --v3-ink: light-dark(#246b47, #7fd1a5);
+  --v4: #2f6fd6; /* V⁴⁺ blue   */
+  --v4-ink: light-dark(#1f4fa3, #8fb4f2);
+  --v5: #e0b42a; /* V⁵⁺ yellow */
+  --v5-ink: light-dark(#7a5c00, #f0cf6a);
+
+  /* ── Type ── */
+  /* One family for everything: contrast comes from weight (600 vs 300), not from a second font */
+  --font-display: 'Inter Variable', system-ui, sans-serif;
+  --font-text: 'Inter Variable', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+
+  /* Fluid type scale: min at 360px, max at 1440px */
+  --step--1: clamp(0.8rem, 0.78rem + 0.1vw, 0.875rem);
+  --step-0: clamp(1rem, 0.96rem + 0.19vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.15rem + 0.46vw, 1.5rem);
+  --step-2: clamp(1.6rem, 1.35rem + 1.11vw, 2.25rem);
+  --step-3: clamp(2.2rem, 1.6rem + 2.78vw, 4rem);
+  --step-4: clamp(3rem, 1.8rem + 6vw, 7.5rem);
+  --step-5: clamp(3.5rem, 1rem + 11vw, 11rem);
+  --step-hero: clamp(2.25rem, 1rem + 4.6vw, 5.25rem);
+  --label: 0.8125rem; /* small uppercase labels, 13px */
+
+  /* ── Space ── */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-s: 1rem;
+  --space-m: 1.5rem;
+  --space-l: clamp(2rem, 1.5rem + 2vw, 3rem);
+  --space-xl: clamp(3rem, 2rem + 4vw, 6rem);
+  --space-2xl: clamp(5rem, 3rem + 8vw, 10rem);
+
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 3rem);
+  --content-max: 90rem;
+  --prose-max: 65ch;
+
+  /* ── Lines, radius, motion ── */
+  --hairline: 1px;
+  --radius: 0;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 200ms;
+  --duration: 600ms;
+  --duration-slow: 1200ms;
+}
+
+/* Oxidation-state switcher: one attribute changes the accent everywhere. */
+:root[data-oxidation='v2'] { --accent: var(--v2); --accent-ink: var(--v2-ink); }
+:root[data-oxidation='v3'] { --accent: var(--v3); --accent-ink: var(--v3-ink); }
+:root[data-oxidation='v4'] { --accent: var(--v4); --accent-ink: var(--v4-ink); }
+:root[data-oxidation='v5'] { --accent: var(--v5); --accent-ink: var(--v5-ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration: 0ms;
+    --duration-slow: 0ms;
+  }
+}

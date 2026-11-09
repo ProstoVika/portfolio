@@ -1,0 +1,28 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ElementTile from '@/components/ElementTile.astro';
+---
+
+<BaseLayout title="Not found">
+  <section class="not-found" aria-labelledby="nf-title">
+    <ElementTile number={404} symbol="?" name="Unknown element" size="lg" />
+    <h1 id="nf-title">This element doesn’t exist</h1>
+    <p>The page may have moved. <a href="/">Back to the homepage</a>.</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: var(--space-m);
+    min-block-size: 80svh;
+    padding: var(--space-2xl) var(--gutter);
+    text-align: center;
+  }
+
+  .not-found h1 {
+    font-size: var(--step-4);
+  }
+</style>

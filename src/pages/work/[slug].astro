@@ -1,0 +1,144 @@
+---
+/** One page per project, generated from src/content/projects/*.md */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ElementTile from '@/components/ElementTile.astro';
+import { getCollection, render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths = (async () => {
+  const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
+    (a, b) => a.data.order - b.data.order,
+  );
+
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: {
+      project,
+      prev: projects[i - 1],
+      next: projects[i + 1],
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { project, prev, next } = Astro.props;
+const { title, symbol, order, summary, role, year, stack, type, links } = project.data;
+const { Content } = await render(project);
+const typeLabel = { commercial: 'Commercial', personal: 'Personal', nda: 'Under NDA', training: 'Training' }[type];
+---
+
+<BaseLayout title={title} description={summary}>
+  <article class="case">
+    <header class="case__header">
+      <a class="case__back" href="/#work">← All work</a>
+      <ElementTile number={order} symbol={symbol} name={title} caption={typeLabel} size="lg" />
+      <h1 class="case__title">{title}</h1>
+      <p class="case__summary">{summary}</p>
+
+      <dl class="case__meta">
+        <div><dt>Role</dt><dd>{role}</dd></div>
+        {year && <div><dt>Year</dt><dd>{year}</dd></div>}
+        <div><dt>Type</dt><dd>{typeLabel}</dd></div>
+        <div><dt>Stack</dt><dd>{stack.join(' · ')}</dd></div>
+      </dl>
+
+      {
+        (links.live || links.code) && (
+          <ul class="case__links" role="list">
+            {links.live && (
+              <li><a class="button" href={links.live} target="_blank" rel="noopener">Visit site</a></li>
+            )}
+            {links.code && (
+              <li><a class="button button--ghost" href={links.code} target="_blank" rel="noopener">View code</a></li>
+            )}
+          </ul>
+        )
+      }
+    </header>
+
+    <div class="case__body prose">
+      <Content />
+    </div>
+
+    <nav class="case__pager" aria-label="More projects">
+      {prev && <a rel="prev" href={`/work/${prev.id}`}>← {prev.data.title}</a>}
+      {next && <a rel="next" href={`/work/${next.id}`}>{next.data.title} →</a>}
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .case {
+    inline-size: min(100% - 2 * var(--gutter), var(--content-max));
+    margin-inline: auto;
+    padding-block-start: var(--space-2xl);
+  }
+
+  .case__header {
+    display: grid;
+    gap: var(--space-m);
+    justify-items: start;
+    padding-block-end: var(--space-xl);
+    border-block-end: var(--hairline) solid var(--line);
+  }
+
+  .case__back {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    text-decoration: none;
+  }
+
+  .case__title {
+    font-size: var(--step-5);
+    line-height: 0.9;
+  }
+
+  .case__summary {
+    max-inline-size: 48ch;
+    font-size: var(--step-1);
+  }
+
+  .case__meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: var(--space-m);
+    inline-size: 100%;
+    padding-block: var(--space-m);
+    box-shadow: var(--engrave-top), var(--engrave-bottom);
+  }
+
+  .case__meta dt {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .case__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .case__body {
+    padding-block: var(--space-xl);
+  }
+
+  .case__pager {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-m);
+    padding-block-start: var(--space-l);
+    border-block-start: var(--hairline) solid var(--line);
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+  }
+
+  .case__pager a {
+    text-decoration: none;
+  }
+
+  .case__pager [rel='next'] {
+    margin-inline-start: auto;
+  }
+</style>
