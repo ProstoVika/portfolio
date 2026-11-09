@@ -32,6 +32,9 @@ shorthand: the CSS minifier folds the timeline into the shorthand and browsers d
 
 GLSL `smoothstep(a, b, x)` is undefined when a >= b (holes on some GPUs): invert with `1.0 - smoothstep(lo, hi, x)`.
 
+## Copy style
+No em dashes (—) anywhere in visible copy: the owner asked to remove them. Use commas, colons or full stops.
+
 ## Honesty
 Never invent facts, numbers, dates or results. Every claim must match the CV.
 Leave a `<!-- TODO -->` where the owner has to supply a fact.
@@ -43,12 +46,14 @@ Leave a `<!-- TODO -->` where the owner has to supply a fact.
 6. Homepage rebuilt: centred bold/light hero + scroll down, endless screenshot marquee (`src/data/gallery.ts`),
    sticky visual + numbered About (01–03), Work, How I work + Toolkit, Contact, back-to-top. Portrait removed for now.
 
-7. Hero veil (current): `src/scripts/veil.ts`, plain TS (~110 lines). The hero starts covered by paper; nine
-   ink blots bloom from the lower middle, merge (metaballs + noise-warped edges), and the paper disappears,
-   uncovering a dark hero (#151413). 4.5 s, ease-in-out-sine; each blot eases in (smoothstep) so nothing pops;
-   rendered at 0.5× resolution (soft edges). Then the canvas REMOVES ITSELF (zero GPU afterwards).
-   Reduced motion / no WebGL → canvas removed at once. Hero text and header are white + `mix-blend-mode: difference`
-   (dark on paper, white on the dark hero); no `isolation` on .hero. Earlier smoke/photo variants were rejected.
+7. Hero = code assembles into "about me": `src/scripts/assemble.ts` (plain TS, no WebGL, no libraries).
+   A 2D canvas draws a field of code (this very file via `?raw`) on paper. ~180 characters of a function
+   (`src/data/hero-code.ts`, tokens with quiet syntax colours) fly out of the field from spots where the same
+   letter is written (Web Animations API: transform/opacity/blur only), and the leftover field blurs and melts
+   away (CSS filter + opacity). Final: the function alone on paper; it IS the about-me (true to the CV).
+   Visible text is aria-hidden; a visually-hidden <h1> carries the name and role. `html.js` flag (inline script)
+   hides characters only when JS runs. Reduced motion → the finished function at once.
+   The nature image experiments (veil, smoke, photo, code-to-nature) were removed at the owner's request.
 
 8. Gallery strip: `src/scripts/gallery.ts` — drifts slowly, drag with mouse/touch (inertia), horizontal trackpad
    swipe, arrow keys; resumes after 2 s idle; transform-based (sub-pixel smooth), paused off-screen; a drag never
@@ -58,6 +63,11 @@ Leave a `<!-- TODO -->` where the owner has to supply a fact.
    Brandon Graham, Danielle Hay (live-site links until case studies exist). Work list and menu exclude
    `type: training`. Lab page = grid of training projects with screenshots (`src/assets/lab/`) + 2024 portfolio.
    Case files for Akash Desai, Danielle Hay, Brandon Graham are `draft: true` with TODOs — wait for the owner's facts.
+
+10. About: sticky portrait (`src/assets/portrait.jpg`) on the left (≥64rem), story scrolls on the right:
+   lead line, three facts, six chapters (commercial, stack, mentor, automation, engineering, off screen).
+   All copy lives in `about` in `src/data/site.ts` and must stay true to the CV. React removed from Toolkit
+   (not used); Astro, RxJS, Webpack, Firebase, SQL, Git added from the CV.
 
 ## Next
 - Oxidation-state switcher (React).

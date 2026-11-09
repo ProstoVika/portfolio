@@ -25,4 +25,4 @@ A barbershop needed its own website that matched its brand and helped customers 
 
 ## Result
 
-<!-- TODO: add one honest outcome — e.g. launch date, Lighthouse score, client feedback. -->
+<!-- TODO: add one honest outcome, e.g. launch date, Lighthouse score, client feedback. -->

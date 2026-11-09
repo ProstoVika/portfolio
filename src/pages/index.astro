@@ -1,11 +1,12 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import ElementTile from '@/components/ElementTile.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
 import { Image } from 'astro:assets';
+import { heroCode } from '@/data/hero-code';
 import { getCollection } from 'astro:content';
-import { about, element, site, socials } from '@/data/site';
+import { about, site, socials } from '@/data/site';
+import portrait from '@/assets/portrait.jpg';
 import { gallery, MIN_GALLERY } from '@/data/gallery';
 
 // Homepage shows real work only; training projects live in the Lab
@@ -19,13 +20,28 @@ const projects = (
 <BaseLayout>
   <!-- ───────────── Hero ───────────── -->
   <section class="hero" aria-labelledby="hero-title">
-    <canvas class="veil" aria-hidden="true"></canvas>
-    <h1 class="hero__title" id="hero-title">
-      <strong>Viktoriia</strong> Sheveria
-    </h1>
-    <p class="hero__lead label">
-      <strong>{site.role}</strong> — {site.intro}
-    </p>
+    <canvas class="code-field" aria-hidden="true"></canvas>
+
+    <h1 class="visually-hidden" id="hero-title">{site.name}, {site.role.toLowerCase()} in {site.location}</h1>
+
+    <!-- The "about me" as code. Each visible character is its own span so it can fly in from the field. -->
+    <div class="hero__code" aria-hidden="true">
+      {
+        heroCode.map((line) => (
+          <span class="hero__line">
+            {line.map(([kind, text]) =>
+              kind === 'space' ? (
+                text
+              ) : (
+                <span class={`tok tok--${kind}`}>
+                  {[...text].map((char) => (char === ' ' ? ' ' : <span data-char>{char}</span>))}
+                </span>
+              ),
+            )}
+          </span>
+        ))
+      }
+    </div>
 
     <a class="hero__scroll label" href={gallery.length >= MIN_GALLERY ? '#gallery' : '#about'}>
       <svg class="hero__arrow" viewBox="0 0 12 40" aria-hidden="true" focusable="false">
@@ -38,7 +54,7 @@ const projects = (
   <!-- ───────────── Gallery: endless strip of project screenshots (drag, swipe or arrow keys) ───────────── -->
   {
     gallery.length >= MIN_GALLERY && (
-    <section class="gallery" id="gallery" aria-label="Project screenshots — drag or use the arrow keys" tabindex="0">
+    <section class="gallery" id="gallery" aria-label="Project screenshots. Drag or use the arrow keys" tabindex="0">
       <div class="gallery__track">
         {
           [false, true].map((isCopy) => (
@@ -64,21 +80,41 @@ const projects = (
     )
   }
 
-  <!-- ───────────── Intro: sticky visual + numbered story ───────────── -->
+  <!-- ───────────── About: sticky portrait on the left, the story scrolls on the right ───────────── -->
   <section class="intro" aria-labelledby="about">
-    <div class="intro__media" aria-hidden="true">
-      <!-- TODO: portrait or studio photo goes here later -->
-      <ElementTile number={element.number} symbol={element.symbol} name={element.name} caption={element.mass} size="lg" />
-    </div>
+    <figure class="intro__media">
+      <Image
+        src={portrait}
+        alt="Viktoriia Sheveria in profile against a white chalk wall"
+        widths={[480, 800, 1200]}
+        sizes="(min-width: 64rem) 45vw, 100vw"
+      />
+    </figure>
 
     <div class="intro__content">
       <h2 class="intro__label label" id="about">About</h2>
+      <p class="intro__lead reveal">{about.lead}</p>
+
+      <dl class="facts reveal">
+        {
+          about.facts.map(({ value, label }) => (
+            <div class="facts__item">
+              <dt class="facts__value">{value}</dt>
+              <dd class="facts__label label">{label}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
       <ol class="numbered" role="list">
         {
-          about.story.map((paragraph, i) => (
-            <li class="numbered__item reveal" id={i === 0 ? 'story' : undefined}>
+          about.chapters.map(({ id, title, text }, i) => (
+            <li class="numbered__item reveal" id={id}>
               <span class="numbered__index label">0{i + 1}</span>
-              <p class="numbered__text">{paragraph}</p>
+              <div>
+                <h3 class="numbered__title">{title}</h3>
+                <p class="numbered__text">{text}</p>
+              </div>
             </li>
           ))
         }
@@ -162,92 +198,82 @@ const projects = (
 </BaseLayout>
 
 <script>
-  import { dissolveVeil } from '@/scripts/veil';
+  import { assembleHero } from '@/scripts/assemble';
   import { initGallery } from '@/scripts/gallery';
 
-  const canvas = document.querySelector<HTMLCanvasElement>('.veil');
+  const hero = document.querySelector<HTMLElement>('.hero');
   const gallery = document.querySelector<HTMLElement>('.gallery');
-  canvas && dissolveVeil(canvas);
+  hero && assembleHero(hero);
   gallery && initGallery(gallery);
 </script>
 
 <style>
-  /* ── Hero: centred title, bold + light in one family ── */
+  /* ── Hero: a field of code that gathers into one function ── */
   .hero {
     position: relative;
-    background: #151413; /* revealed when the paper veil dissolves */
     display: grid;
-    grid-template-rows: 1fr auto auto 1fr;
-    justify-items: center;
-    gap: var(--space-m);
+    grid-template-rows: 1fr auto 1fr;
+    place-items: center;
     min-block-size: 100svh;
-    padding: var(--space-2xl) var(--gutter) var(--space-l);
-    text-align: center;
+    padding: 6rem var(--gutter) var(--space-l); /* 6rem clears the fixed header */
+    overflow: hidden;
   }
 
-  /* White + difference: dark while the paper is on top, white on the dark hero —
-     even mid-letter while a blot passes through. No isolation on .hero, or the blend breaks. */
-  .hero__title,
-  .hero__lead,
-  .hero__scroll {
-    position: relative; /* paint above the absolutely positioned veil */
-    color: #fff;
-    mix-blend-mode: difference;
-  }
-
-  /* Paper veil: CSS paper until the shader takes over, then removed by veil.ts */
-  .veil {
+  .code-field {
     position: absolute;
     inset: 0;
     inline-size: 100%;
     block-size: 100%;
-    background: var(--paper);
     pointer-events: none;
+    transition:
+      filter 2.2s var(--ease-out),
+      opacity 2.2s var(--ease-out);
   }
 
-  .veil:global(.is-live) {
-    background: none;
+  /* The leftover code blurs and melts away like a veil (class set by assemble.ts) */
+  .code-field:global(.is-melting) {
+    filter: blur(10px);
+    opacity: 0;
   }
 
-  .hero__title {
+  .hero__code {
     grid-row: 2;
-    font-size: var(--step-hero);
-    line-height: 1.05;
+    position: relative;
+    font-family: var(--font-mono);
+    font-size: clamp(0.8rem, 0.5rem + 1.15vw, 1.45rem);
+    line-height: 1.75;
+    white-space: pre;
+    max-inline-size: 100%;
   }
 
-  .hero__title strong {
-    font-weight: 600;
+  .hero__line {
+    display: block;
   }
 
-  .hero__lead {
-    grid-row: 3;
-    max-inline-size: 36rem;
+  [data-char] {
+    display: inline-block; /* transforms need a box */
   }
 
-  .hero__lead strong {
-    font-weight: 600;
+  /* With JS the characters wait invisible until they fly in; without JS they simply show */
+  :global(.js) .hero:not(:global(.is-assembling)) [data-char] {
+    opacity: 0;
   }
+
+  /* Quiet syntax colours: the name and the values carry the weight */
+  .tok--keyword { color: rgb(53 53 53 / 0.45); }
+  .tok--punct { color: rgb(53 53 53 / 0.4); }
+  .tok--key { color: rgb(53 53 53 / 0.7); }
+  .tok--string { color: var(--ink); }
+  .tok--name { color: var(--ink); font-weight: 600; }
 
   .hero__scroll {
-    grid-row: 4;
+    grid-row: 3;
     align-self: end;
+    position: relative;
     display: grid;
     justify-items: center;
     gap: var(--space-m);
     text-decoration: none;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .hero__scroll {
-      animation: fade-in 1s var(--ease-out) 2.4s both;
-    }
-  }
-
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-      translate: 0 1rem;
-    }
   }
 
   .hero__arrow,
@@ -266,6 +292,23 @@ const projects = (
 
   .hero__scroll:hover .hero__arrow {
     translate: 0 0.4rem;
+  }
+
+  /* Appears once the function has come together */
+  :global(.js) .hero__scroll {
+    opacity: 0;
+    transition: opacity 1s var(--ease-out);
+  }
+
+  :global(.js) .hero:global(.is-assembled) .hero__scroll {
+    opacity: 1;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      translate: 0 1rem;
+    }
   }
 
   /* ── Gallery: moved by gallery.ts with a transform ── */
@@ -321,7 +364,7 @@ const projects = (
     scale: 1.03;
   }
 
-  /* ── Intro: sticky visual on the left, numbered story on the right ── */
+  /* ── About: sticky portrait on the left, story scrolls on the right ── */
   .intro {
     display: grid;
     gap: var(--space-xl);
@@ -329,15 +372,57 @@ const projects = (
   }
 
   .intro__media {
-    display: grid;
-    place-items: center;
+    margin: 0;
+    overflow: hidden;
     aspect-ratio: 4 / 5;
-    background: var(--paper-raised);
-    box-shadow: var(--engrave-top), var(--engrave-bottom);
+  }
+
+  .intro__media :global(img) {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
   }
 
   .intro__label {
     padding-block-end: var(--space-m);
+  }
+
+  .intro__lead {
+    max-inline-size: 18ch;
+    padding-block-end: var(--space-l);
+    font-size: var(--step-3);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  /* Three quick facts in a row */
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-m);
+    margin: 0 0 var(--space-xl);
+  }
+
+  .facts__item {
+    display: grid;
+    align-content: start;
+    gap: var(--space-2xs);
+    padding-block-start: var(--space-s);
+    box-shadow: var(--engrave-top);
+  }
+
+  .facts__value {
+    font-size: var(--step-3);
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .facts__label {
+    margin: 0;
+    color: var(--ink-muted);
   }
 
   @media (width >= 64rem) {
@@ -346,6 +431,7 @@ const projects = (
       align-items: start;
     }
 
+    /* The portrait stays put while the story scrolls past it */
     .intro__media {
       position: sticky;
       inset-block-start: 5rem;
@@ -366,8 +452,16 @@ const projects = (
     box-shadow: var(--engrave-top), var(--engrave-bottom);
   }
 
+  .numbered__title {
+    margin-block-end: var(--space-xs);
+    font-size: var(--step-1);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-transform: none;
+  }
+
   .numbered__text {
-    max-inline-size: 26rem;
+    max-inline-size: 30rem;
     font-size: var(--step-0);
     line-height: 1.65;
     letter-spacing: -0.01em;
@@ -375,7 +469,7 @@ const projects = (
 
   @media (width >= 48rem) {
     .numbered__item {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 5rem 1fr;
     }
   }
 

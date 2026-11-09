@@ -3,7 +3,7 @@ title: Danielle Hay
 symbol: Dh
 order: 5
 summary: Website for an entrepreneur and leadership speaker.
-role: TODO — what I did on this project
+role: TODO, what I did on this project
 stack: [TODO]
 type: commercial
 links:

@@ -19,7 +19,7 @@ interface Props {
 
 const { title, description = site.description, image = '/og-default.png' } = Astro.props;
 
-const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.role}`;
+const pageTitle = title ? `${title} | ${site.name}` : `${site.name} | ${site.role}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
 ---
@@ -28,6 +28,8 @@ const ogImage = new URL(image, Astro.site);
 <html lang="en" data-oxidation="v4">
   <head>
     <meta charset="utf-8" />
+    <!-- Lets CSS hide things that JS will animate in; without JS everything simply shows -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />

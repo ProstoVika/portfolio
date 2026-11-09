@@ -24,7 +24,7 @@ export const MIN_GALLERY = 3;
 export const gallery: GalleryItem[] = [
   {
     image: akashDesai,
-    alt: 'Akash Desai — leadership and business consulting website, hero section',
+    alt: 'Akash Desai, leadership and business consulting website, hero section',
     href: 'https://akashdesaileadership.com/',
     external: true,
   },
@@ -35,13 +35,13 @@ export const gallery: GalleryItem[] = [
   },
   {
     image: brandonGraham,
-    alt: 'Brandon Graham — personal brand website, hero section',
+    alt: 'Brandon Graham, personal brand website, hero section',
     href: 'https://brandon-graham.com/',
     external: true,
   },
   {
     image: danielleHay,
-    alt: 'Danielle Hay — leadership and business website, hero section',
+    alt: 'Danielle Hay, leadership and business website, hero section',
     href: 'https://daniellehay.com/',
     external: true,
   },

@@ -11,7 +11,7 @@ featured: true
 
 ## The task
 
-I wanted to know as soon as certain topics were mentioned on Reddit — without refreshing pages all day.
+I wanted to know as soon as certain topics were mentioned on Reddit, without refreshing pages all day.
 
 ## What I did
 

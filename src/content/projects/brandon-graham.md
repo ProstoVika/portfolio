@@ -3,7 +3,7 @@ title: Brandon Graham
 symbol: Bg
 order: 6
 summary: Personal brand website with a bold, editorial look.
-role: TODO — what I did on this project
+role: TODO, what I did on this project
 stack: [TODO]
 type: commercial
 links:
