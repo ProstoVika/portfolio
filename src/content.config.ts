@@ -11,8 +11,8 @@ const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
   schema: z.object({
     title: z.string(),
-    /** Two-letter "element symbol" shown on the tile, e.g. "Rc". */
-    symbol: z.string().min(1).max(2),
+    /** Short abbreviation, e.g. "Rc". Not shown at the moment. */
+    symbol: z.string().min(1).max(2).optional(),
     /** Order on the page; also shown as the tile's "atomic number". */
     order: z.number().int().positive(),
     summary: z.string().max(160),

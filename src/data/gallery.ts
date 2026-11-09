@@ -13,6 +13,7 @@ import brandonGraham from '@/assets/work/brandon-graham.png';
 import danielleHay from '@/assets/work/danielle-hay.png';
 
 export interface GalleryItem {
+  title: string;
   image: ImageMetadata;
   alt: string;
   href: string;
@@ -23,23 +24,27 @@ export const MIN_GALLERY = 3;
 
 export const gallery: GalleryItem[] = [
   {
+    title: 'Akash Desai',
     image: akashDesai,
     alt: 'Akash Desai, leadership and business consulting website, hero section',
     href: 'https://akashdesaileadership.com/',
     external: true,
   },
   {
+    title: 'Royal Cut',
     image: royalCut,
     alt: 'Royal Cut barbershop website, home page',
     href: '/work/royal-cut',
   },
   {
+    title: 'Brandon Graham',
     image: brandonGraham,
     alt: 'Brandon Graham, personal brand website, hero section',
     href: 'https://brandon-graham.com/',
     external: true,
   },
   {
+    title: 'Danielle Hay',
     image: danielleHay,
     alt: 'Danielle Hay, leadership and business website, hero section',
     href: 'https://daniellehay.com/',

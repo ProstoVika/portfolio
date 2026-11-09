@@ -23,36 +23,8 @@ export const site = {
 
 export const socials = [
   { label: 'GitHub', href: 'https://github.com/ProstoVika' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/viktoriia-sheveria-a20446185/' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/viktoriia-sheveria-a20446185' },
 ] as const;
-
-export const nav = [
-  { label: 'Work', href: '/#work' },
-  { label: 'About', href: '/#about' },
-  { label: 'Lab', href: '/lab' },
-  { label: 'Contact', href: '/#contact' },
-] as const;
-
-/** The element itself — used by the logo tile. */
-export const element = {
-  number: 23,
-  symbol: 'V',
-  name: 'Vanadium',
-  mass: '50.942',
-} as const;
-
-/**
- * Vanadium ions change colour with oxidation state.
- * These drive the accent-colour switcher (values are tuned in styles/tokens.css).
- */
-export const oxidationStates = [
-  { id: 'v2', label: 'V²⁺', colour: 'violet' },
-  { id: 'v3', label: 'V³⁺', colour: 'green' },
-  { id: 'v4', label: 'V⁴⁺', colour: 'blue' },
-  { id: 'v5', label: 'V⁵⁺', colour: 'yellow' },
-] as const;
-
-export type OxidationState = (typeof oxidationStates)[number]['id'];
 
 /**
  * About section. Every line here must be true and checkable against the CV.

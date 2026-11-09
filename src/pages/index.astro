@@ -1,20 +1,12 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import ProjectCard from '@/components/ProjectCard.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
 import { Image } from 'astro:assets';
 import { heroCode } from '@/data/hero-code';
-import { getCollection } from 'astro:content';
 import { about, site, socials } from '@/data/site';
 import portrait from '@/assets/portrait.jpg';
 import { gallery, MIN_GALLERY } from '@/data/gallery';
 
-// Homepage shows real work only; training projects live in the Lab
-const projects = (
-  await getCollection('projects', ({ data }) => !data.draft && data.type !== 'training')
-).sort(
-  (a, b) => a.data.order - b.data.order,
-);
 ---
 
 <BaseLayout>
@@ -43,7 +35,7 @@ const projects = (
       }
     </div>
 
-    <a class="hero__scroll label" href={gallery.length >= MIN_GALLERY ? '#gallery' : '#about'}>
+    <a class="hero__scroll label" href={gallery.length >= MIN_GALLERY ? '#work' : '#about'}>
       <svg class="hero__arrow" viewBox="0 0 12 40" aria-hidden="true" focusable="false">
         <path d="M6 0 V38 M1 33 L6 38 L11 33" />
       </svg>
@@ -54,7 +46,7 @@ const projects = (
   <!-- ───────────── Gallery: endless strip of project screenshots (drag, swipe or arrow keys) ───────────── -->
   {
     gallery.length >= MIN_GALLERY && (
-    <section class="gallery" id="gallery" aria-label="Project screenshots. Drag or use the arrow keys" tabindex="0">
+    <section class="gallery" id="work" aria-label="Client websites. Drag or use the arrow keys" tabindex="0">
       <div class="gallery__track">
         {
           [false, true].map((isCopy) => (
@@ -76,6 +68,10 @@ const projects = (
           ))
         }
       </div>
+      <p class="gallery__note label">
+        Client websites I built or rebuilt. More work is under NDA and happy to discuss.
+        Training projects live in the <a class="link-line" href="/lab">Lab</a>.
+      </p>
     </section>
     )
   }
@@ -122,28 +118,9 @@ const projects = (
     </div>
   </section>
 
-  <!-- ───────────── Work ───────────── -->
-  <section class="section" aria-labelledby="work">
-    <SectionHeading id="work" index="01" title="Selected work" />
-    <ol class="project-list" role="list">
-      {
-        projects.map((project) => (
-          <li class="reveal">
-            <ProjectCard project={project} />
-          </li>
-        ))
-      }
-    </ol>
-    <p class="section__note label">
-      Some client work is under NDA and is described without names.
-      More experiments live in the <a class="link-line" href="/lab">Lab</a>, and my first portfolio is still
-      online: <a class="link-line" href={site.oldPortfolio} target="_blank" rel="noopener">2024 portfolio</a>.
-    </p>
-  </section>
-
   <!-- ───────────── How I work + toolkit ───────────── -->
   <section class="section" aria-labelledby="approach">
-    <SectionHeading id="approach" index="02" title="How I work" />
+    <SectionHeading id="approach" index="01" title="How I work" />
     <div class="method">
       <ol class="numbered" role="list">
         {
@@ -174,7 +151,7 @@ const projects = (
 
   <!-- ───────────── Contact ───────────── -->
   <section class="section contact" aria-labelledby="contact">
-    <SectionHeading id="contact" index="03" title="Contact" />
+    <SectionHeading id="contact" index="02" title="Contact" />
     <p class="contact__lead label">Open to front-end and WordPress roles in London or remote.</p>
     <a class="contact__email link-line" href={`mailto:${site.email}`}>{site.email}</a>
     <ul class="contact__links label" role="list">
@@ -341,6 +318,11 @@ const projects = (
     padding-inline-end: clamp(1rem, 3vw, 3rem);
   }
 
+  .gallery__note {
+    padding: var(--space-l) var(--gutter) 0;
+    color: var(--ink-muted);
+  }
+
   .gallery__item a {
     display: block;
     overflow: hidden;
@@ -471,11 +453,6 @@ const projects = (
     .numbered__item {
       grid-template-columns: 5rem 1fr;
     }
-  }
-
-  /* ── Work ── */
-  .project-list {
-    box-shadow: var(--engrave-top);
   }
 
   /* ── Method + toolkit ── */

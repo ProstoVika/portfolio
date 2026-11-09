@@ -8,14 +8,8 @@
  *  - <details name="…">: an exclusive accordion — opening one group closes the others.
  */
 import Logo from '@/components/Logo.astro';
-import { getCollection } from 'astro:content';
+import { gallery } from '@/data/gallery';
 import { site, socials } from '@/data/site';
-
-const projects = (
-  await getCollection('projects', ({ data }) => !data.draft && data.type !== 'training')
-).sort(
-  (a, b) => a.data.order - b.data.order,
-);
 
 interface MenuLink {
   label: string;
@@ -23,18 +17,21 @@ interface MenuLink {
   external?: boolean;
 }
 
+/** Every link here must point at something that exists on the site or online */
 const groups: { title: string; links: MenuLink[] }[] = [
   {
     title: 'Work',
     links: [
-      { label: 'All work', href: '/#work' },
-      ...projects.map((p) => ({ label: p.data.title, href: `/work/${p.id}` })),
+      ...gallery.map(({ title, href, external }) => ({ label: title, href, external })),
+      { label: 'Threat Detector', href: '/work/threat-detector' },
     ],
   },
   {
     title: 'About',
     links: [
-      { label: 'Story', href: '/#story' },
+      { label: 'Commercial experience', href: '/#story' },
+      { label: 'Stack', href: '/#stack' },
+      { label: 'Mentorship', href: '/#mentor' },
       { label: 'How I work', href: '/#approach' },
       { label: 'Toolkit', href: '/#toolkit' },
       { label: 'CV (PDF)', href: site.cv, external: true },

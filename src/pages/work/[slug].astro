@@ -1,12 +1,11 @@
 ---
 /** One page per project, generated from src/content/projects/*.md */
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import ElementTile from '@/components/ElementTile.astro';
 import { getCollection, render } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 
 export const getStaticPaths = (async () => {
-  const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
+  const projects = (await getCollection('projects', ({ data }) => !data.draft && data.type !== 'training')).sort(
     (a, b) => a.data.order - b.data.order,
   );
 
@@ -21,7 +20,7 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { project, prev, next } = Astro.props;
-const { title, symbol, order, summary, role, year, stack, type, links } = project.data;
+const { title, summary, role, year, stack, type, links } = project.data;
 const { Content } = await render(project);
 const typeLabel = { commercial: 'Commercial', personal: 'Personal', nda: 'Under NDA', training: 'Training' }[type];
 ---
@@ -30,7 +29,6 @@ const typeLabel = { commercial: 'Commercial', personal: 'Personal', nda: 'Under 
   <article class="case">
     <header class="case__header">
       <a class="case__back" href="/#work">← All work</a>
-      <ElementTile number={order} symbol={symbol} name={title} caption={typeLabel} size="lg" />
       <h1 class="case__title">{title}</h1>
       <p class="case__summary">{summary}</p>
 

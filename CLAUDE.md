@@ -6,7 +6,6 @@ The owner writes in Ukrainian — answer in Ukrainian, keep code and commit mess
 
 ## Concept
 - Brand: **Vanadium** (element V, number 23). Vanadium strengthens steel → tagline "Making the web stronger."
-- Projects are shown as periodic-table tiles (`ElementTile.astro`): order = "atomic number", two-letter symbol.
 - Accent colour = vanadium oxidation states (V²⁺ violet, V³⁺ green, V⁴⁺ blue, V⁵⁺ yellow),
   switched by `data-oxidation` on `<html>` (tokens in `src/styles/tokens.css`). Default: v4.
 - Look (Makhno-inspired palette and type): rosy paper #ece4e1 with generated SVG grain, ink #353535,
@@ -69,10 +68,17 @@ Leave a `<!-- TODO -->` where the owner has to supply a fact.
    All copy lives in `about` in `src/data/site.ts` and must stay true to the CV. React removed from Toolkit
    (not used); Astro, RxJS, Webpack, Firebase, SQL, Git added from the CV.
 
+11. Selected work list and periodic-table tiles REMOVED (owner: not needed). The gallery strip is now `#work`
+   with a short note under it. Menu groups are built from `src/data/gallery.ts` (title field) + Threat Detector,
+   About anchors (#story, #stack, #mentor, #approach, #toolkit), CV, Lab. Case pages only for non-training work.
+   CV lives at `public/cv.pdf`. Links: GitHub https://github.com/ProstoVika,
+   LinkedIn https://www.linkedin.com/in/viktoriia-sheveria-a20446185 (both in `socials`).
+   Before finishing, check internal links/anchors in dist (none may be broken).
+
 ## Next
 - Oxidation-state switcher (React).
 - Threat Detector interactive demo with recorded sample data.
-- `public/cv.pdf`, `public/og-default.png`, final domain in `astro.config.mjs`, GitHub Actions deploy.
+- `public/og-default.png`, final domain in `astro.config.mjs`, GitHub Actions deploy.
 
 ## Check before finishing any change
 ```
