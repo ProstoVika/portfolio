@@ -1,6 +1,6 @@
 # Vanadium
 
-Portfolio of **Viktoriia Sheveria** — Front-End & WordPress Developer, London.
+Portfolio of **Victoria Sheveria** — Front-End & WordPress Developer, London.
 
 > V · 23 · Vanadium — the element that makes steel stronger.
 

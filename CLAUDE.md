@@ -1,6 +1,6 @@
 # Vanadium — project notes for Claude
 
-Portfolio of Viktoriia Sheveria (Front-End & WordPress Developer, London).
+Portfolio of Victoriia Sheveria (Front-End & WordPress Developer, London).
 It is used to apply for jobs, so the code itself is part of the portfolio: keep it short, clean and explainable.
 The owner writes in Ukrainian — answer in Ukrainian, keep code and commit messages in English.
 

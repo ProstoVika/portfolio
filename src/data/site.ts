@@ -4,7 +4,7 @@
  */
 
 export const site = {
-  name: 'Viktoriia Sheveria',
+  name: 'Victoria Sheveria',
   brand: 'Vanadium',
   role: 'Front-End & WordPress Developer',
   location: 'London, UK',
@@ -12,7 +12,7 @@ export const site = {
   intro:
     'I build fast, accessible websites and the automation behind them, from custom WordPress themes to TypeScript front-ends.',
   description:
-    'Portfolio of Viktoriia Sheveria, front-end and WordPress developer in London. Custom WordPress, TypeScript, React, Angular, performance and automation.',
+    'Portfolio of Victoria Sheveria, front-end and WordPress developer in London. Custom WordPress, TypeScript, React, Angular, performance and automation.',
   email: 'viktoriia.ianuta@gmail.com',
   /** Shown in the menu. Set to '' to hide the phone number. */
   phone: '+44 7385 696993',
