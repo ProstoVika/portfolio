@@ -1,21 +1,22 @@
 /**
- * Hero: a field of code on paper. Single characters lift out of it, drift to the centre and
- * settle into one function (the "about me"). The rest of the code blurs and melts away.
+ * Hero: a field of code on paper. The letters of my name lift out of it, grow and settle into
+ * the title. The rest of the code blurs and melts away, then the paper itself dissolves in ink
+ * blots and uncovers the night-forest video.
  *
  * - The field is drawn once on a 2D canvas: this very file, imported as text with ?raw.
- * - Each character of the function is real text in the page (a <span>), so it stays readable,
- *   selectable and sharp; it flies in with a transform from a spot in the field where the same
- *   letter is written.
+ * - Each letter of the name is real text in the page (a <span>), so it stays sharp; it starts
+ *   as a tiny glyph at a spot in the field where the same letter is written, and grows into place.
  * - Only transform, opacity and filter are animated — all GPU-composited, no layout work.
  */
 import source from './assemble.ts?raw';
+import { dissolvePaper } from './ink-veil';
 
 const FONT_SIZE = 11;
 const LINE_HEIGHT = 15;
 const FONT_FAMILY = '"JetBrains Mono Variable", ui-monospace, monospace';
 const FIELD_INK = 0.38; // opacity of the code field
-const FLY_MS = 1900;
-const STAGGER_MS = 7; // delay between neighbouring characters
+const FLY_MS = 2000;
+const STAGGER_MS = 55; // delay between neighbouring letters
 const MELT_DELAY_MS = 700;
 
 type Point = { x: number; y: number };
@@ -52,14 +53,25 @@ function drawField(canvas: HTMLCanvasElement, ink: string): Map<string, Point[]>
 
 const pick = <T,>(list: T[]) => list[Math.floor(Math.random() * list.length)];
 
+/** Plays the background video only while the hero is on screen (and never for reduced motion) */
+function manageVideo(hero: HTMLElement, video: HTMLVideoElement, still: boolean) {
+  if (still) return video.pause();
+  new IntersectionObserver(([entry]) => void (entry.isIntersecting ? video.play() : video.pause())).observe(hero);
+}
+
 export async function assembleHero(hero: HTMLElement): Promise<void> {
   const field = hero.querySelector<HTMLCanvasElement>('.code-field')!;
-  const chars = [...hero.querySelectorAll<HTMLElement>('.hero__code [data-char]')];
+  const paper = hero.querySelector<HTMLCanvasElement>('.paper-veil')!;
+  const video = hero.querySelector<HTMLVideoElement>('.hero__video')!;
+  const chars = [...hero.querySelectorAll<HTMLElement>('.hero__title [data-char]')];
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  manageVideo(hero, video, still);
 
   if (still) {
     field.remove();
-    return void hero.classList.add('is-assembled');
+    paper.remove();
+    return void hero.classList.add('is-named', 'is-assembled');
   }
 
   await document.fonts.load(`${FONT_SIZE}px ${FONT_FAMILY}`);
@@ -68,13 +80,15 @@ export async function assembleHero(hero: HTMLElement): Promise<void> {
 
   const flights = chars.map((span, i) => {
     const target = span.getBoundingClientRect();
-    const from = pick(spots.get(span.textContent!) ?? spots.get(' ')!);
+    const from = pick(spots.get(span.textContent!.toLowerCase()) ?? spots.get(span.textContent!) ?? spots.get(' ')!);
     const dx = origin.left + from.x - target.left;
     const dy = origin.top + from.y - target.top;
+    const shrink = FONT_SIZE / target.height; // start the size of a glyph in the field
+    span.style.transformOrigin = '0 0';
 
     return span.animate(
       [
-        { transform: `translate(${dx}px, ${dy}px)`, opacity: 0, filter: 'blur(3px)' },
+        { transform: `translate(${dx}px, ${dy}px) scale(${shrink})`, opacity: 0, filter: 'blur(2px)' },
         { opacity: 1, offset: 0.25 },
         { transform: 'none', opacity: 1, filter: 'blur(0)' },
       ],
@@ -91,6 +105,8 @@ export async function assembleHero(hero: HTMLElement): Promise<void> {
   setTimeout(() => field.classList.add('is-melting'), MELT_DELAY_MS);
 
   await Promise.all(flights);
-  hero.classList.add('is-assembled');
+  hero.classList.add('is-named'); // the intro line fades in
   field.remove();
+  await dissolvePaper(paper, getComputedStyle(document.documentElement).backgroundColor);
+  hero.classList.add('is-assembled');
 }

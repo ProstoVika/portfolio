@@ -20,7 +20,7 @@ const year = new Date().getFullYear();
   </ul>
 
   <p class="site-footer__meta">
-    © {year} {site.name}. Built with Astro &amp; React. <a href={site.source} rel="noopener" target="_blank">Source on GitHub</a>.
+    © {year} {site.name}. Built with Astro and TypeScript. <a href={site.source} rel="noopener" target="_blank">Source on GitHub</a>.
   </p>
 </footer>
 
@@ -33,6 +33,7 @@ const year = new Date().getFullYear();
     gap: var(--space-s) var(--space-l);
     margin-block-start: var(--space-2xl);
     padding: var(--space-l) var(--gutter);
+    padding-inline-end: calc(var(--gutter) + 4.5rem); /* room for the back-to-top button */
     border-block-start: var(--hairline) solid var(--line);
     font-size: var(--step--1);
   }

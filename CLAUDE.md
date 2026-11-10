@@ -77,6 +77,17 @@ Leave a `<!-- TODO -->` where the owner has to supply a fact.
    LinkedIn https://www.linkedin.com/in/viktoriia-sheveria-a20446185 (both in `socials`).
    Before finishing, check internal links/anchors in dist (none may be broken).
 
+12. Hero video: `public/hero/forest-{1920,1280}.mp4` (seamless 9 s loop made from the owner's 10 s clip, no audio,
+   H.264 CRF 22/24, faststart) + `forest-poster.jpg`. Sequence: code field on paper → characters fly into
+   `victoriaSheveria()` → leftover code melts → `src/scripts/ink-veil.ts` (2D canvas, destination-out radial
+   blots at 0.5× res) dissolves the paper → night forest. Video is started by JS (no autoplay attr), paused
+   off-screen, never played for reduced motion. Hero text + header are white with `mix-blend-mode: difference`.
+
+13. Hero now assembles the NAME (Victoria bold, Sheveria light), not the function: letters start as tiny glyphs
+   in the code field and grow into place; the intro line fades in (`.is-named`), then the paper veil reveals
+   the video. The function `victoriaSheveria()` moved to the Contact section ("The same, for developers"),
+   static <pre> with quiet syntax colours. Recruiters must understand the first screen at a glance.
+
 ## Next
 - Oxidation-state switcher (React).
 - Threat Detector interactive demo with recorded sample data.
